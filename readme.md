@@ -9,10 +9,12 @@
 <br>
 
 > **⚠️ Public Beta:** This mod is currently in active development. While the core features work, please encounter bugs and back up your worlds.
-
 </div>
 
 ---
+
+> The mod has been tested in Minecraft version 1.21.10
+
 
 ## 📖 About
 
@@ -55,7 +57,7 @@ The export engine supports multiple workflows:
 
 ## 📥 Installation
 
-1.  Install **Fabric Loader** for your Minecraft version (1.20.5+).
+1.  Install **Fabric Loader** for your Minecraft version (1.21.10).
 2.  **Important:** Download and install **Fabric API** (Required).
 3.  Download the latest `McTo3D-x.x.x.jar` from the releases tab.
 4.  Drop the `.jar` file into your `.minecraft/mods` folder.
