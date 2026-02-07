@@ -1,0 +1,15 @@
+# Build and  IDE files
+build/
+.gradle/
+.idea/
+*.iml
+*.class
+*.jar
+.DS_Store
+
+# Exec Minecraft
+run/
+
+# SECRETS
+mcto3d_secrets.json
+config/mcto3d_secrets.json
