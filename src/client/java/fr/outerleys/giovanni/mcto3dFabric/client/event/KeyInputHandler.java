@@ -11,8 +11,11 @@
 package fr.outerleys.giovanni.mcto3dFabric.client.event;
 
 import fr.outerleys.giovanni.mcto3dFabric.client.utils.ImportManager;
+import fr.outerleys.giovanni.mcto3dFabric.utils.PlaceBlockPayload; // IMPORT IMPORTANT
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking; // IMPORT IMPORTANT
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -38,8 +41,7 @@ public class KeyInputHandler {
     public static KeyBinding moveNearKey;
 
     public static void register() {
-        // 1. Register KeyBindings using the custom Category object
-
+        // 1. Register KeyBindings
         placeKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.mcto3d.place",
                 InputUtil.Type.KEYSYM,
@@ -139,9 +141,19 @@ public class KeyInputHandler {
             BlockPos finalPos = origin.add(newX, rel.getY(), newZ);
 
             if (client.world != null) {
-                // Force block placement (Flag 3 = Update block + Send to client)
-                client.world.setBlockState(finalPos, entry.getValue(), 3);
-                count++;
+                // --- OLD WAY (Ghost Blocks) ---
+                // client.world.setBlockState(finalPos, entry.getValue(), 3);
+
+                // --- NEW WAY (Networking) ---
+                // We send a packet to the server for each block
+                // (Note: For very large objects, we should batch this, but for <5000 blocks it's okay)
+                int rawId = Block.getRawIdFromState(entry.getValue());
+                var payload = new PlaceBlockPayload(finalPos, rawId);
+
+                if (ClientPlayNetworking.canSend(PlaceBlockPayload.ID)) {
+                    ClientPlayNetworking.send(payload);
+                    count++;
+                }
             }
         }
 
