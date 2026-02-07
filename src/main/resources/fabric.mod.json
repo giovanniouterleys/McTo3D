@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "mcto3d-fabric",
+  "version": "${version}",
+  "name": "McTo3D-fabric",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/mcto3d-fabric/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "fr.outerleys.giovanni.mcto3dFabric.client.Mcto3dFabricDataGenerator"
+    ],
+    "client": [
+      "fr.outerleys.giovanni.mcto3dFabric.client.Mcto3dFabricClient"
+    ],
+    "main": [
+      "fr.outerleys.giovanni.mcto3dFabric.Mcto3dFabric"
+    ]
+  },
+  "mixins": [
+    "mcto3d-fabric.mixins.json",
+    {
+      "config": "mcto3d-fabric.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
