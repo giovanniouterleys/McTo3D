@@ -19,12 +19,15 @@ import fr.outerleys.giovanni.mcto3dFabric.client.gui.ExportOverlay;
 import fr.outerleys.giovanni.mcto3dFabric.client.render.ImportRenderer;
 import fr.outerleys.giovanni.mcto3dFabric.client.utils.*;
 import fr.outerleys.giovanni.mcto3dFabric.selection.Cuboid;
+import fr.outerleys.giovanni.mcto3dFabric.utils.PlaceBlockPayload;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.particle.ParticleTypes;
@@ -292,28 +295,40 @@ public class Mcto3dFabricClient implements ClientModInitializer {
                         }
 
                         var player = context.getSource().getPlayer();
-                        var world = player.getEntityWorld();
 
-                        // Calculate final position (hologram location)
                         Vec3d lookDir = player.getRotationVec(1.0f);
                         Vec3d centerPos = player.getEyePos().add(lookDir.multiply(ImportManager.distance));
                         BlockPos origin = new BlockPos((int) centerPos.x, (int) centerPos.y, (int) centerPos.z);
 
                         int count = 0;
-                        // Place each block (Ghost blocks on client side)
+                        int rotation = ImportManager.rotationSteps;
+
                         for (Map.Entry<BlockPos, BlockState> entry : ImportManager.currentVoxels.entrySet()) {
-                            BlockPos relPos = entry.getKey();
-                            // Rotation is handled in rendering/key input, here we place raw relative positions
-                            BlockPos target = origin.add(relPos);
-                            world.setBlockState(target, entry.getValue(), 3);
-                            count++;
+                            BlockPos rel = entry.getKey();
+
+                            int newX = rel.getX();
+                            int newZ = rel.getZ();
+                            for (int i = 0; i < rotation; i++) {
+                                int tempX = newX;
+                                newX = -newZ;
+                                newZ = tempX;
+                            }
+
+                            BlockPos target = origin.add(newX, rel.getY(), newZ);
+
+                            int rawId = Block.getRawIdFromState(entry.getValue());
+                            var payload = new PlaceBlockPayload(target, rawId);
+
+                            if (ClientPlayNetworking.canSend(PlaceBlockPayload.ID)) {
+                                ClientPlayNetworking.send(payload);
+                                count++;
+                            }
                         }
 
-                        context.getSource().sendFeedback(Text.literal("§a" + count + " blocks placed!"));
+                        context.getSource().sendFeedback(Text.literal("§aRequest sent for " + count + " blocks!"));
                         ImportManager.clear();
                         return 1;
                     }));
-
             // --- COMMAND: ROTATION (Legacy/Debug) ---
             dispatcher.register(ClientCommandManager.literal("rotate3d")
                     .then(ClientCommandManager.argument("angle", FloatArgumentType.floatArg())
