@@ -101,12 +101,12 @@ public class KeyInputHandler {
 
             // DISTANCE CONTROL
             if (moveFarKey.isPressed()) {
-                ImportManager.distance = Math.min(ImportManager.distance + 0.5, 50.0);
+                ImportManager.distance = Math.min(ImportManager.distance + 10, 600.0);
                 client.player.sendMessage(Text.literal("§bDistance: " + String.format("%.1f", ImportManager.distance) + "m"), true);
             }
 
             if (moveNearKey.isPressed()) {
-                ImportManager.distance = Math.max(ImportManager.distance - 0.5, 2.0);
+                ImportManager.distance = Math.max(ImportManager.distance - 10, 10.0);
                 client.player.sendMessage(Text.literal("§bDistance: " + String.format("%.1f", ImportManager.distance) + "m"), true);
             }
         });
