@@ -20,7 +20,7 @@ public class ImportManager {
     public static Map<BlockPos, BlockState> currentVoxels = null;
 
     // Hologram parameters
-    public static double distance = 5.0;
+    public static double distance = 30.0;
     public static int rotationSteps = 0; // 0 = 0°, 1 = 90°, 2 = 180°, etc.
 
     public static void clear() {
