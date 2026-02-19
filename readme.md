@@ -24,7 +24,7 @@ Currently developed for **Fabric**, this mod aims to be the simplest workflow fr
 
 ---
 
-## ✨ Features (v0.2.0-beta)
+## ✨ Features (v0.2.1-beta)
 
 ### 🛠️ Intuitive Selection
 * **Wand Selection:** Just grab a **Golden Hoe**. Left-click for Position 1, Right-click for Position 2.
@@ -52,7 +52,8 @@ The export engine supports multiple workflows:
     * **Rotate:** Use `Right Arrow` key.
     * **Distance:** Use `Up/Down Arrow` keys.
     * **Place:** Press `Enter`.
-
+    * 
+* Adding a log system to understand API errors
 ---
 
 ## 📥 Installation
